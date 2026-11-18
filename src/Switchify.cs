@@ -20,8 +20,16 @@ using Microsoft.Win32;
 static class Program
 {
     [STAThread]
-    static void Main()
+    static void Main(string[] args)
     {
+        // El instalador usa «--startup on|off» para crear o quitar la tarea de inicio con Windows
+        // (la misma que el menú «Iniciar con Windows»), sin abrir la bandeja.
+        if (args.Length == 2 && args[0] == "--startup")
+        {
+            try { TrayContext.SetStartup(args[1] == "on"); }
+            catch { Environment.Exit(1); }
+            return;
+        }
         bool created;
         using (var mutex = new Mutex(true, "Switchify_SingleInstance", out created))
         {
@@ -436,7 +444,7 @@ class TrayContext : ApplicationContext
         return Schtasks("/Query /TN \"" + TaskName + "\" /XML", out xml) == 0 && !xml.Contains("<Enabled>false</Enabled>");
     }
 
-    static void SetStartup(bool enable)
+    internal static void SetStartup(bool enable)
     {
         string output;
         if (enable)

@@ -5,6 +5,8 @@ $fw = Split-Path $csc
 $winmd = Join-Path $env:WINDIR 'System32\WinMetadata'
 $out = if ($args[0]) { $args[0] } else { Join-Path $PSScriptRoot 'Switchify.exe' }
 $icon = Join-Path $PSScriptRoot 'assets\switchify.ico'
+# Manifiesto (sin pedir administrador, Windows 10/11); los metadatos de versión están en src\AssemblyInfo.cs.
+$manifest = Join-Path $PSScriptRoot 'src\app.manifest'
 # UI Automation (saber qué archivo hay bajo el cursor): viene con .NET, en la caché global de ensamblados.
 $gac = Join-Path $env:WINDIR 'Microsoft.NET\assembly\GAC_MSIL'
 $uia = @('UIAutomationClient', 'UIAutomationTypes', 'WindowsBase') | ForEach-Object {
@@ -14,7 +16,7 @@ $uia = @('UIAutomationClient', 'UIAutomationTypes', 'WindowsBase') | ForEach-Obj
 # Las APIs de Windows (PDF y OCR) se usan a través de los .winmd del sistema.
 # El icono va dos veces: como icono del .exe (/win32icon) y como recurso para la bandeja (/resource).
 & $csc /nologo /target:winexe /optimize+ /codepage:65001 "/out:$out" `
-    "/win32icon:$icon" "/resource:$icon,Switchify.ico" $uia `
+    "/win32icon:$icon" "/win32manifest:$manifest" "/resource:$icon,Switchify.ico" $uia `
     /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Core.dll /r:Microsoft.CSharp.dll `
     /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll /r:System.Xml.dll /r:System.Xml.Linq.dll `
     "/r:$fw\System.Runtime.dll" "/r:$fw\System.Threading.Tasks.dll" "/r:$fw\System.Runtime.WindowsRuntime.dll" `

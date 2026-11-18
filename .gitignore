@@ -1,3 +1,6 @@
 # Ejecutable compilado (se genera con build.ps1)
 *.exe
 *.pdb
+
+# Instalador y .exe generados por installer.ps1
+dist/

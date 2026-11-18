@@ -7,7 +7,7 @@
 
 Convert files on Windows from a circular menu. Drag a file, press **Shift**, and drop it on the format you want — or just hover over a file and press Shift. The result is saved next to the original, which is never overwritten.
 
-Switchify is a single `.exe` that lives in the system tray. It uses only what Windows already includes: no extra programs, runtimes or browsers needed.
+Switchify is a small app that lives in the system tray. It uses only what Windows already includes: no extra programs, runtimes or browsers needed.
 
 <p align="center">
   <img src="assets/demo.gif" alt="Switchify demo: converting an image to JPG, a Markdown file to PDF, and opening the image tools" width="820">
@@ -44,10 +44,13 @@ Requires **Windows 10 or 11**.
 
 ### Download
 
-1. Download `Switchify.exe` from the [latest release](../../releases/latest).
-2. Put it in a folder of your choice and open it. Its icon appears in the system tray.
+1. Download `Switchify-Setup-<version>.exe` from the [latest release](../../releases/latest).
+2. Open it and follow the steps. It installs for your user only (no administrator rights needed) in `%LOCALAPPDATA%\Programs\Switchify`, adds Switchify to the Start menu and, if you leave the option checked, starts it with Windows.
+3. Switchify opens at the end of the setup. Its icon appears in the system tray.
 
-Windows SmartScreen may warn you because the app is not signed: click **More info → Run anyway**.
+Windows SmartScreen may warn you because the installer is not code-signed yet: click **More info → Run anyway**.
+
+To update, download the new installer and run it: it replaces the installed copy.
 
 ### Build from source
 
@@ -61,13 +64,22 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1
 
 This creates `Switchify.exe` and installs a copy in `%LOCALAPPDATA%\Programs\Switchify`. Open that copy the first time; running `build.ps1` again updates it (and restarts it if it is open).
 
+To build the installer, install [Inno Setup 6](https://jrsoftware.org/isinfo.php) once and run `installer.ps1`. It creates `dist\Switchify-Setup-<version>.exe`; the version is set in `src\AssemblyInfo.cs`.
+
+```powershell
+winget install --id JRSoftware.InnoSetup -e --scope user
+powershell -ExecutionPolicy Bypass -File .\installer.ps1
+```
+
 ### Start with Windows
 
-Right-click the tray icon and check **Iniciar con Windows** (Start with Windows). It creates a scheduled task that opens Switchify when you sign in.
+The installer can turn this on for you. You can also change it at any time: right-click the tray icon and check or uncheck **Iniciar con Windows** (Start with Windows). It uses a scheduled task that opens Switchify when you sign in.
 
 ### Uninstall
 
-Uncheck **Iniciar con Windows**, choose **Salir** (Exit) from the tray menu, and delete `Switchify.exe` (or the `%LOCALAPPDATA%\Programs\Switchify` folder).
+Go to **Settings → Apps → Installed apps**, find **Switchify** and choose **Uninstall**. It closes Switchify and removes the startup task and its folder.
+
+If you used an older version (a loose `Switchify.exe`), uncheck **Iniciar con Windows**, choose **Salir** (Exit) from the tray menu and delete the file.
 
 ## Limitations
 
